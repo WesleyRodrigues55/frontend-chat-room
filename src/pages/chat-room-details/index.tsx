@@ -49,7 +49,10 @@ export function ChatRoomDetails() {
                         isMenuOpen ? 'block fixed inset-0 z-50' : 'hidden md:block'
                     } col-span-1 md:col-span-2 lg:col-span-1 text-white p-4 overflow-y-auto bg-zinc-800`}
                     >
-                    <InfoAboutChatRoom roomId={roomId} userId={userId} />
+                    <InfoAboutChatRoom 
+                        roomId={roomId} 
+                        userId={userId}
+                    />
 
                     {isMenuOpen && (
                         <button

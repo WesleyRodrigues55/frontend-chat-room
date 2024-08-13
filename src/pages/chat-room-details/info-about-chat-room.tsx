@@ -20,7 +20,7 @@ interface Room {
 
 export function InfoAboutChatRoom({
     roomId,
-    userId
+    userId,
 } : RoomProps) {
     const navigate = useNavigate()
 
@@ -85,18 +85,21 @@ export function InfoAboutChatRoom({
             })
             .catch(err => {
                 console.log("Error, ", err)
-                return navigate(`/chat-room/${roomId}/create-username`)
-            })
-
-        api.get(`/room/${roomId}`)
-            .then(response => {
-                const { room } = response.data
-                setRoom(room)
-            })
-            .catch(err => {
-                console.log("Error, ", err)
                 return navigate(`/`)
             })
+            .finally(() => {
+                api.get(`/room/${roomId}`)
+                .then(response => {
+                    const { room } = response.data
+                    setRoom(room)
+                })
+                .catch(err => {
+                    console.log("Error, ", err)
+                    return navigate(`/`)
+                })
+            })
+
+        
 
         return () => {
             socket.off('update-user'); 
