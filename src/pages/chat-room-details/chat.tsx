@@ -64,7 +64,7 @@ export function Chat({
     }, [messages]);
 
     return (
-        <div className="h-full flex flex-col justify-end">
+        <div className="h-full flex flex-col justify-end pt-14">
             <div className="flex flex-1 space-y-4 flex-col overflow-y-auto h-full px-4">
                 {messages.map((message) => {
                     const isOwnMessage = userId === message.user_id;

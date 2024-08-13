@@ -12,8 +12,6 @@ dist
 dist-ssr
 *.local
 .env
-src/lib/axios.tsx
-src/lib/socket.tsx
 
 # Editor directories and files
 .vscode/*
