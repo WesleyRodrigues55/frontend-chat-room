@@ -29,22 +29,27 @@ export function ChatRoomDetails() {
     }
 
     return (
-        <div className="grid grid-cols-4 h-screen">
-            <div className="col-span-1 bg-zinc-800 text-white p-4 overflow-y-auto">
-                <InfoAboutChatRoom 
-                    roomId={roomId}
-                    userId={userId}
-                />
-            </div>
+        <div>
+            {/* <div className="p-3 bg-zinc-800 w-full sm:fixed md:hidden">
+                <h1>aaaa</h1>
+            </div> */}
+            <div className="grid grid-cols-4 h-screen">
+                <div className="hidden md:block col-span-1 bg-zinc-800 text-white p-4 overflow-y-auto">
+                    <InfoAboutChatRoom 
+                        roomId={roomId}
+                        userId={userId}
+                    />
+                </div>
 
-            <div className="col-span-3 bg-zinc-100/20 overflow-y-auto">
-                <Chat 
-                    createNewMessage={createNewMessage}
-                    setMessage={setMessage}
-                    message={message}
-                    roomId={roomId}
-                    userId={userId}
-                />
+                <div className="col-span-4 md:col-span-3 bg-zinc-100/20 overflow-y-auto">
+                    <Chat 
+                        createNewMessage={createNewMessage}
+                        setMessage={setMessage}
+                        message={message}
+                        roomId={roomId}
+                        userId={userId}
+                    />
+                </div>
             </div>
         </div>
     )
