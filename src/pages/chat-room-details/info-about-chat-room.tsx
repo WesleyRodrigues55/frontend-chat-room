@@ -106,7 +106,7 @@ export function InfoAboutChatRoom({
     }, [])
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full mt-10 md:mt-auto">
             {room && (
                 <div className="space-y-8 flex flex-1 flex-col h-full">
                     <div>

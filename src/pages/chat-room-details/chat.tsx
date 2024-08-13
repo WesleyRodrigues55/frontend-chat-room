@@ -29,7 +29,7 @@ export function Chat({
     setMessage,
     message,
     roomId, 
-    userId 
+    userId,
 } : ChatProps) {
     const endOfMessagesRef = useRef<HTMLDivElement>(null);
   
