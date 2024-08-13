@@ -79,20 +79,25 @@ export function Chat({
             setMessages((prevMessages) => 
                 prevMessages.map((message) => {
                     if (message.id === updatedReact.chat_room_id) {
-                        const existingReactionIndex = message.reaction.findIndex(
+                        // Garantir que `message.reaction` é um array
+                        const reactions = message.reaction || [];
+        
+                        const existingReactionIndex = reactions.findIndex(
                             (reaction) => reaction.user_id === updatedReact.user_id
                         );
         
                         if (existingReactionIndex >= 0) {
-                            const updatedReactions = [...message.reaction];
+                            // Remove a reação existente
+                            const updatedReactions = [...reactions];
                             updatedReactions.splice(existingReactionIndex, 1);
         
                             return { ...message, react: updatedReact.react, reaction: updatedReactions };
                         } else {
+                            // Adiciona a nova reação
                             return { 
                                 ...message, 
                                 react: updatedReact.react, 
-                                reaction: [...message.reaction, updatedReact] 
+                                reaction: [...reactions, updatedReact] 
                             };
                         }
                     }
@@ -100,6 +105,7 @@ export function Chat({
                 })
             );
         };
+        
 
         socket.on('reaction', handleNewLike)
 
