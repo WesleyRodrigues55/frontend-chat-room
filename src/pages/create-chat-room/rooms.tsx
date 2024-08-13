@@ -28,32 +28,62 @@ export function Rooms({
 
     useEffect(() => {
         socket.emit('join-index');
-
+    }, [])
+    
+    useEffect(() => {
         const handleCreateRoom = (newRoom) => {
             setRooms((prevRooms) => [...prevRooms, newRoom]);
         }
 
+        socket.on('create-room', handleCreateRoom);
+
+        return () => {
+            socket.off('create-room', handleCreateRoom) 
+        };
+
+    }, [])
+    
+    useEffect(() => {
         const handleNewUser = (newUser) => {
             setCountOnlineUsers((prevUsers) => [...prevUsers, newUser]);
         }
 
+        socket.on('create-user', handleNewUser)
+
+        return () => {
+            socket.off('create-user', handleNewUser)
+        };
+    }, [])
+    
+    useEffect(() => {
         const handleRemoveUser = (userToRemove) => {
             setCountOnlineUsers((prevUsers) => 
                 prevUsers.filter(user => user.id !== userToRemove.id)
             );
         };
 
+        socket.on('update-user', handleRemoveUser)
+
+        return () => {
+            socket.off('update-user', handleRemoveUser)
+        };
+    }, [])
+    
+    useEffect(() => {
         const handleDeleteRoom = (deletedRoom: Rooms) => {
             setRooms((prevRooms) => 
                 prevRooms.filter(room => room.id !== deletedRoom.id)
             );
         }
 
-        socket.on('create-room', handleCreateRoom);
-        socket.on('create-user', handleNewUser)
-        socket.on('update-user', handleRemoveUser)
         socket.on('delete-room', handleDeleteRoom);
 
+        return () => {
+            socket.off('delete-room', handleDeleteRoom); 
+        };
+    }, [])
+    
+    useEffect(() => {
         api.get('/rooms')
             .then(response => {
                 const { rooms } = response.data
@@ -63,14 +93,6 @@ export function Rooms({
             .catch(err => 
                 console.error('Error: ', err)
             )
-
-        return () => {
-            socket.off('create-room', handleCreateRoom) 
-            socket.off('create-user', handleNewUser)
-            socket.off('update-user', handleRemoveUser)
-            socket.off('delete-room'); 
-        };
-
     }, [])
 
     return (

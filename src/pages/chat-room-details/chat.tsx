@@ -50,7 +50,7 @@ export function Chat({
     };
 
     async function handleLike(chatRoomId: string) {
-        api.put(`/chat-room/${chatRoomId}/${userId}/${roomId}/react-message`)
+        await api.put(`/chat-room/${chatRoomId}/${userId}/${roomId}/react-message`)
             .then(response => {
                 console.log('Like')
             })
@@ -116,11 +116,18 @@ export function Chat({
     }, [])
 
     useEffect(() => {
-
-        socket.on('message', (newMessage) => {
+        const handleNewMessage = (newMessage) => {
             setMessages((prevMessages) => [...prevMessages, newMessage]);
-        });
-        
+        }
+
+        socket.on('message', handleNewMessage);
+
+        return () => {
+            socket.off('message', handleNewMessage); 
+        };
+    }, [])
+
+    useEffect(() => {
         api.get(`/chat-room/${roomId}/messages`)
             .then(response => {
                 const { messages } = response.data
@@ -130,11 +137,6 @@ export function Chat({
             .catch(err => {
                 console.log('Error: ', err)
             })
-            
-        return () => {
-            socket.off('message'); 
-        };
-
     }, [])
 
     useEffect(() => {

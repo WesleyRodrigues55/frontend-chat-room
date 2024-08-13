@@ -13,7 +13,6 @@ export function CreateUserModal({
     setUsername,
     closeCreateUsernameModal
 } : CreateUserModalProps) {
-    // const [username,  setUsername] = useState('')
 
     return (
         <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>

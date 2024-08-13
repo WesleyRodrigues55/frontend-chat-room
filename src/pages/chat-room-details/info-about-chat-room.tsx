@@ -28,18 +28,18 @@ export function InfoAboutChatRoom({
     const [getUsername, setGetUsername] = useState('')
     const [getUserId, setGetUserId] = useState('')
 
-    const deleteRoom = async () => {
+    async function deleteRoom() {
         await api.delete(`/room/${roomId}`)
             .then(response => {
                 console.log("Deleted room!")
             })
             .catch(err => {
                 console.log('Error: ', err)
-            })       
+            })      
     }
 
-    function handleClickLogout() {
-        api.put(`/user/${userId}`)
+    async function handleClickLogout() {
+        await api.put(`/user/${userId}`)
             .then(response => {
                 if (room?.users?.length == 1 || null) {
                     deleteRoom()
@@ -51,9 +51,20 @@ export function InfoAboutChatRoom({
             })
     }
 
-    useEffect(() => {
+    async function fetchGetRoomById() {
+        await api.get(`/room/${roomId}`)
+            .then(response => {
+                const { room } = response.data
+                setRoom(room)
+            })
+            .catch(err => {
+                console.log("Error, ", err)
+                return navigate(`/`)
+            })
+    }
 
-        socket.on('update-user', (updatedUser) => {
+    useEffect(() => {
+        const handleUpdateUser = (updatedUser) => {
             setRoom(prevRoom => {
                 if (prevRoom) {
                     return {
@@ -63,9 +74,16 @@ export function InfoAboutChatRoom({
                 }
                 return prevRoom;
             });
-        });
+        }
+        socket.on('update-user', handleUpdateUser);
 
-        socket.on('create-user', (newUsers) => {
+        return () => {
+            socket.off('update-user', handleUpdateUser)
+        }
+    }, [])
+
+    useEffect(() => {
+        const handleCreateUser = (newUsers) => {
             setRoom(prevRoom => {
                 if (prevRoom) {
                     return {
@@ -75,8 +93,16 @@ export function InfoAboutChatRoom({
                 }
                 return prevRoom;
             });
-        });
+        }
 
+        socket.on('create-user', handleCreateUser);
+
+        return () => {
+            socket.off('create-user', handleCreateUser);
+        }
+    }, [])
+
+    useEffect(() => {
         api.get(`/user/${userId}`)
             .then(response => {
                 const { user } = response.data
@@ -88,24 +114,8 @@ export function InfoAboutChatRoom({
                 return navigate(`/`)
             })
             .finally(() => {
-                api.get(`/room/${roomId}`)
-                .then(response => {
-                    const { room } = response.data
-                    setRoom(room)
-                })
-                .catch(err => {
-                    console.log("Error, ", err)
-                    return navigate(`/`)
-                })
+                fetchGetRoomById()
             })
-
-        
-
-        return () => {
-            socket.off('update-user'); 
-            socket.off('create-user'); 
-        };
-
     }, [])
 
     return (
